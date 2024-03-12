@@ -1,0 +1,29 @@
+name: Solaris
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Solaris version'
+        required: true
+        default: '11.4'
+        type: choice
+        options:
+          - 11.4
+jobs:
+  runshell:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Solaris VM
+      uses: vmactions/solaris-vm@v1
+      with:
+        release: ${{ inputs.os }}
+        mem: 13312
+        sync: no
+    # Solaris hasn't got tmate, build it from scratch seems overkill
+    # run it on the host instead but it means that no way to kill it
+    - name: Install tmate
+      run:
+        sudo apt install -y tmate openssh-client
+    - name: Run tmate
+      run: tmate -F new-session ssh solaris

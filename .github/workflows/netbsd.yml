@@ -1,0 +1,33 @@
+name: NetBSD
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'NetBSD version'
+        required: true
+        default: '9.3'
+        type: choice
+        options:
+          - 9.0
+          - 9.1
+          - 9.2
+          - 9.3
+jobs:
+  runshell:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install NetBSD VM
+      uses: vmactions/netbsd-vm@v1
+      with:
+        release: ${{ inputs.os }}
+        mem: 13312
+        sync: no
+        prepare:
+          pkg_add curl
+    - name: Install tmate
+      run:
+        ssh netbsd /usr/sbin/pkg_add tmate
+    - name: Run tmate
+      run:
+        ssh netbsd tmate -F

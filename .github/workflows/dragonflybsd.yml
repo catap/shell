@@ -1,0 +1,35 @@
+name: DragonFlyBSD
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'DragonFlyBSD version'
+        required: true
+        default: '6.4.0'
+        type: choice
+        options:
+          - 6.4.0
+jobs:
+  runshell:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install DragonFlyBSD VM
+      uses: vmactions/dragonflybsd-vm@v1
+      with:
+        release: ${{ inputs.os }}
+        mem: 13312
+        sync: no
+        prepare:
+          pkg install -y curl
+    - name: Install tmate
+      run:
+        ssh dragonflybsd pkg install -y tmate
+    # DragonFlyBSD inhers FreeBSD's strips of fingerprints
+    - name: Revert tmate public server fingerprints
+      run: |
+        ssh dragonflybsd 'echo set -g tmate-server-rsa-fingerprint   \"SHA256:Hthk2T/M/Ivqfk1YYUn5ijC2Att3+UPzD7Rn72P5VWs\" > ~/.tmate.conf'
+        ssh dragonflybsd 'echo set -g tmate-server-ecdsa-fingerprint \"SHA256:8GmKHYHEJ6n0TEdciHeEGkKOigQfCFuBULdt6vZIhDc\" >> ~/.tmate.conf'
+    - name: Run tmate
+      run:
+        ssh dragonflybsd tmate -F

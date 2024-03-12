@@ -1,0 +1,37 @@
+name: FreeBSD
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'FreeBSD version'
+        required: true
+        default: '14.0'
+        type: choice
+        options:
+          - 12.4
+          - 13.2
+          - 14.0
+jobs:
+  runshell:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install FreeBSD VM
+      uses: vmactions/freebsd-vm@v1
+      with:
+        release: ${{ inputs.os }}
+        mem: 13312
+        sync: no
+        prepare:
+          pkg install -y curl
+    - name: Install tmate
+      run:
+        ssh freebsd pkg install -y tmate
+    # FreeBSD strips fingerprints of public available SSH server
+    - name: Revert tmate public server fingerprints
+      run: |
+        ssh freebsd 'echo "set -g tmate-server-rsa-fingerprint   \"SHA256:Hthk2T/M/Ivqfk1YYUn5ijC2Att3+UPzD7Rn72P5VWs\"" > ~/.tmate.conf'
+        ssh freebsd 'echo "set -g tmate-server-ecdsa-fingerprint \"SHA256:8GmKHYHEJ6n0TEdciHeEGkKOigQfCFuBULdt6vZIhDc\"" >> ~/.tmate.conf'
+    - name: Run tmate
+      run:
+        ssh freebsd tmate -F

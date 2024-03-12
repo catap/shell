@@ -1,0 +1,32 @@
+name: OpenBSD
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'OpenBSD version'
+        required: true
+        default: '7.4'
+        type: choice
+        options:
+          - 7.2
+          - 7.3
+          - 7.4
+jobs:
+  runshell:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install OpenBSD VM
+      uses: vmactions/openbsd-vm@v1
+      with:
+        release: ${{ inputs.os }}
+        mem: 13312
+        sync: no
+        prepare:
+          pkg_add curl
+    - name: Install tmate
+      run:
+        ssh openbsd pkg_add tmate
+    - name: Run tmate
+      run:
+        ssh openbsd tmate -F

@@ -1,0 +1,26 @@
+name: macOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'macOS version'
+        required: true
+        default: 'latest'
+        type: choice
+        options:
+          - 11
+          - 12
+          - 13
+          - 14
+          - latest
+jobs:
+  runshell:
+    runs-on: macos-${{ inputs.os }}
+    steps:
+    - name: Install tmate
+      run:
+        brew install tmate
+    - name: Run tmate
+      run:
+        tmate -F

@@ -1,0 +1,24 @@
+name: Ubuntu
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Ubuntu version'
+        required: true
+        default: 'latest'
+        type: choice
+        options:
+          - 20.04
+          - 22.04
+          - latest
+jobs:
+  runshell:
+    runs-on: ubuntu-${{ inputs.os }}
+    steps:
+    - name: Install tmate
+      run:
+        sudo apt install -y tmate openssh-client
+    - name: Run tmate
+      run:
+        tmate -F
