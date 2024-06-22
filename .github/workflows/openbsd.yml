@@ -6,12 +6,13 @@ on:
       os:
         description: 'OpenBSD version'
         required: true
-        default: '7.4'
+        default: '7.5'
         type: choice
         options:
           - 7.2
           - 7.3
           - 7.4
+          - 7.5
 jobs:
   runshell:
     runs-on: ubuntu-latest
