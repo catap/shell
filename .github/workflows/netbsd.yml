@@ -6,14 +6,14 @@ on:
       os:
         description: 'NetBSD version'
         required: true
-        default: '10'
+        default: '10.0'
         type: choice
         options:
           - 9.0
           - 9.1
           - 9.2
           - 9.3
-          - 10
+          - 10.0
 jobs:
   runshell:
     runs-on: ubuntu-latest
